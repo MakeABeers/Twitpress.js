@@ -1,0 +1,77 @@
+<!DOCTYPE html>
+<html lang="en">
+	<head>
+		<meta charset="utf-8" />
+		<title>jmpress.js | a jQuery plugin to build a website on the infinite canvas</title>
+		<meta name="description" content="jmpress.js is jQuery port of https://github.com/bartaz/impress.js based on the power of CSS3 transforms and transitions in modern browsers and inspired by the idea behind prezi.com.">
+		<meta name="author" content="Kyle Robinson Young @shama" />
+		<meta name="viewport" content="width=device-width, maximum-scale=1.0, initial-scale=1.0, user-scalable=yes" />
+		<meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1" />
+		<link href="css/simple.css" rel="stylesheet" type="text/css" />
+		<script type="text/javascript" src="http://ajax.googleapis.com/ajax/libs/jquery/1.7.1/jquery.min.js"></script>
+		<script type="text/javascript" src="js/View/jmpress.js"></script>
+	</head>
+	<body>
+		<script type="text/javascript">
+			window.onload = function() {
+				// document.open();
+				// document.write('<p>What ever you want to write<\/p>');
+				// document.write('<p>More stuff you want to write<\/p>');
+				// document.close();
+				var twit = {
+					user : '',
+					text : '',
+					image : ''
+				};
+				var twits = [];
+				var url = 'http://search.twitter.com/search.json?callback=?&q=';
+				query = 'sopa';
+				var cont = 0;
+				var content;
+
+				$.ajax({
+					dataType : 'json',
+					url : 'http://search.twitter.com/search.json?callback=?&q=sopa&rpp=10',
+					success : function(data) {
+						$.each(data.results, function(i, tweet) {
+
+							$("#twitpress").append('<div class="step"  data-x="' + (4000 + 1000 * i) + '" data-scale="' + 1 + '"> <p>' + tweet.text + '</p> <p><img src="' + tweet.profile_image_url + '" widt="70" height="70" /> @' + tweet.from_user + '</p> </div>');
+							//$('#twitter ul').append('<li><a href="' + item.text + '">' + item.from_user_id + '</a></li>');
+						});
+						$('#twitpress').jmpress();
+					}
+				});
+				timer_is_on=0;
+				doTimer();
+
+				// setInterval($('#simple').nex(),2000);
+
+			}
+			
+			function timedCount() {
+				$(self).next();
+				t = setTimeout("timedCount()", 1000);
+			}
+
+			function doTimer() {
+				if(!timer_is_on) {
+					timer_is_on = 1;
+					timedCount();
+				}
+			}
+		</script>
+		<div id="twitpress">
+
+		</div>
+		<div class="hint">
+			<p>
+				Use arrow keys to navigate
+			</p>
+		</div>
+		</div>
+		<script>
+			//$("#simple").append('<div class="step"  data-x="4000"> <p>esta es nueva</p> </div>');
+			//$('#simple').jmpress();
+		</script>
+	</body>
+</html>
