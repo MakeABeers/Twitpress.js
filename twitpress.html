@@ -2,22 +2,18 @@
 <html lang="en">
 	<head>
 		<meta charset="utf-8" />
-		<title>jmpress.js | a jQuery plugin to build a website on the infinite canvas</title>
-		<meta name="description" content="jmpress.js is jQuery port of https://github.com/bartaz/impress.js based on the power of CSS3 transforms and transitions in modern browsers and inspired by the idea behind prezi.com.">
-		<meta name="author" content="Kyle Robinson Young @shama" />
-		<meta name="viewport" content="width=device-width, maximum-scale=1.0, initial-scale=1.0, user-scalable=yes" />
-		<meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1" />
+		<title>Betabeers Twitter Activity</title>
+		<link href="css/bootstrap.css" rel="stylesheet" type="text/css" />
 		<link href="css/simple.css" rel="stylesheet" type="text/css" />
-		<script type="text/javascript" src="http://ajax.googleapis.com/ajax/libs/jquery/1.7.1/jquery.min.js"></script>
-		<script type="text/javascript" src="js/View/jmpress.js"></script>
+		<script type="text/javascript" src="js/jquery-1.7.1.min.js"></script>
+		<script type="text/javascript" src="js/jmpress.js"></script>
+		<script type="text/javascript" src="js/jmpress.duration.js"></script>
+		<script type="text/javascript" src="js/bootstrap.min.js"></script>
+		
 	</head>
 	<body>
 		<script type="text/javascript">
 			window.onload = function() {
-				// document.open();
-				// document.write('<p>What ever you want to write<\/p>');
-				// document.write('<p>More stuff you want to write<\/p>');
-				// document.close();
 				var twit = {
 					user : '',
 					text : '',
@@ -25,53 +21,76 @@
 				};
 				var twits = [];
 				var url = 'http://search.twitter.com/search.json?callback=?&q=';
-				query = 'sopa';
-				var cont = 0;
-				var content;
+				var query = 'betabeers';
 
 				$.ajax({
 					dataType : 'json',
-					url : 'http://search.twitter.com/search.json?callback=?&q=sopa&rpp=10',
+					url : url + query,
 					success : function(data) {
 						$.each(data.results, function(i, tweet) {
 
-							$("#twitpress").append('<div class="step"  data-x="' + (4000 + 1000 * i) + '" data-scale="' + 1 + '"> <p>' + tweet.text + '</p> <p><img src="' + tweet.profile_image_url + '" widt="70" height="70" /> @' + tweet.from_user + '</p> </div>');
-							//$('#twitter ul').append('<li><a href="' + item.text + '">' + item.from_user_id + '</a></li>');
+							$("#twitpress").append('<div class="step" data-rotate="' + (-30-3*i) + '" data-y="' + (50 + 300 * i) + '" data-scale="' + (1 - (0.05*i)) + '"> <p>' + tweet.text + '</p> <p><img src="' + tweet.profile_image_url + '" widt="70" height="70" /> @' + tweet.from_user + '</p> </div>');
+							
+							if(twits[tweet.from_user] === undefined) {
+								twits[tweet.from_user] = 1;
+							} else {
+								twits[tweet.from_user] += 1;
+							}
 						});
-						$('#twitpress').jmpress();
+						
+						var tempArr = [];
+						for(i in twits) {
+							tempArr.push(i);
+						}
+
+						var orderedTwits = sortByValue(tempArr, twits);
+
+						function sortByValue(keyArray, valueMap) {
+							return keyArray.sort(function(a,b){return valueMap[b]-valueMap[a];});
+						}
+
+
+						var num = 1;
+						for(var i in orderedTwits) {
+							var string_beers = '';
+							for(var j = 0;j<twits[orderedTwits[i]];j++) {
+								string_beers += "<img src='img/beer.png' />";
+							}
+							$('#toptweeters tbody').append('<tr><td>' + num + '.</td><td><a target="blank" href="http://twitter.com/' + orderedTwits[i] + '">@' + orderedTwits[i] + '</a></td><td><center>' + string_beers + '</center></td></tr>');
+							num++;
+						}
+
+						$('#twitpress').jmpress({
+							duration: { defaultValue: 7000 }
+						});
+
 					}
 				});
-				timer_is_on=0;
-				doTimer();
 
-				// setInterval($('#simple').nex(),2000);
-
-			}
-			
-			function timedCount() {
-				$(self).next();
-				t = setTimeout("timedCount()", 1000);
-			}
-
-			function doTimer() {
-				if(!timer_is_on) {
-					timer_is_on = 1;
-					timedCount();
-				}
 			}
 		</script>
-		<div id="twitpress">
+
+		<div class="row">
+			<div class="span4">
+			<img src="img/logo.png" style="margin: 10px; border: 0; display: block;" />
+			<table id="toptweeters" class="table table-bordered" style="margin: 20px 0 0 20px; width:200px;">
+			  <thead>
+			   <tr>
+			   	<td><strong>#</strong></td>
+			   	<td><strong>Name</strong></td>
+			   	<td><strong>Tweets</strong></td>
+			   <tr>
+			  </thead>
+			  <tbody>
+
+			  </tbody>
+			</table>
+			<div>
+
+			<div id="twitpress" class="span8 offset4">
+
+			</div>
 
 		</div>
-		<div class="hint">
-			<p>
-				Use arrow keys to navigate
-			</p>
-		</div>
-		</div>
-		<script>
-			//$("#simple").append('<div class="step"  data-x="4000"> <p>esta es nueva</p> </div>');
-			//$('#simple').jmpress();
-		</script>
 	</body>
 </html>
